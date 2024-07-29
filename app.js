@@ -54,8 +54,9 @@ async function exchangeButton(){
     let to_cur = toCurr.value.toLowerCase();
     let rate = res[from_cur][to_cur]; 
     let finalAmount = rate * amtVal;
+    finalAmount=Math.round(finalAmount * 100) / 100;
     msg.innerText=`$amt`
-    // console.log(finalAmount);
+    console.log(finalAmount);
     msg.innerText = `${amtVal} ${fromCurr.value} = ${finalAmount} ${toCurr.value}`;
 
 }

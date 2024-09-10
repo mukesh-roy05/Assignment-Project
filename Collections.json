@@ -1,0 +1,44 @@
+
+1.
+db.users.insertMany([
+  { name: "Alice", email: "alice@example.com", age: 30 },
+  { name: "Bob", email: "bob@example.com", age: 25 }
+]);
+
+2. 
+db.codekata.insertMany([
+  { userId: "alice@example.com", problem: "Two Sum", difficulty: "Easy", solved: true },
+  { userId: "bob@example.com", problem: "Longest Substring Without Repeating Characters", difficulty: "Medium", solved: false }
+]);
+
+3.
+db.attendance.insertMany([
+  { userId: "alice@example.com", date: new Date("2024-10-01"), status: "Present", companyDriveId: "drive1" },
+  { userId: "bob@example.com", date: new Date("2024-10-02"), status: "Absent", companyDriveId: "drive2" }
+]);
+
+4.
+db.topics.insertMany([
+  { topic: "Database Systems", date: new Date("2024-10-05") },
+  { topic: "Algorithms", date: new Date("2024-10-15") }
+]);
+
+
+5.
+db.tasks.insertMany([
+  { task: "Complete MongoDB tutorial", dueDate: new Date("2024-10-10"), userId: "alice@example.com", status: "In Progress" },
+  { task: "Submit assignment on algorithms", dueDate: new Date("2024-10-20"), userId: "bob@example.com", status: "Not Submitted" }
+]);
+
+6.
+db.company_drives.insertMany([
+  { company: "TechCorp", date: new Date("2020-10-16"), location: "Main Auditorium" },
+  { company: "Innovate Inc.", date: new Date("2020-10-20"), location: "Conference Room B" }
+]);
+
+7.
+db.mentors.insertMany([
+  { name: "Dr. Smith", expertise: "Machine Learning", contact: "smith@example.com", mentees: Array(16).fill("mentee@example.com") }, // 16 mentees
+  { name: "Ms. Johnson", expertise: "Web Development", contact: "johnson@example.com", mentees: Array(10).fill("mentee@example.com") }  // 10 mentees
+]);
+

@@ -1,0 +1,123 @@
+
+
+1. Find all the topics and tasks which are taught in the month of October
+
+
+// Topics taught in October
+db.topics.find({
+  date: {
+    $gte: new Date("2024-10-01T00:00:00Z"),
+    $lt: new Date("2024-11-01T00:00:00Z")
+  }
+}).toArray();
+
+// Tasks due in October
+db.tasks.find({
+  dueDate: {
+    $gte: new Date("2024-10-01T00:00:00Z"),
+    $lt: new Date("2024-11-01T00:00:00Z")
+  }
+}).toArray();
+
+2. Find all the company drives which appeared between October 15, 2020, and October 31, 2020
+
+db.company_drives.find({
+  date: {
+    $gte: new Date("2020-10-15T00:00:00Z"),
+    $lte: new Date("2020-10-31T23:59:59Z")
+  }
+}).toArray();
+
+3. Find all the company drives and students who appeared for the placement
+
+// Find all the students and the corresponding company drives
+db.attendance.aggregate([
+  {
+    $match: { status: "Present" }
+  },
+  {
+    $lookup: {
+      from: "company_drives",
+      localField: "companyDriveId",  // Ensure this field matches your schema
+      foreignField: "_id",
+      as: "driveDetails"
+    }
+  },
+  {
+    $unwind: "$driveDetails"
+  },
+  {
+    $project: {
+      student: "$userId",
+      companyDrive: "$driveDetails"
+    }
+  }
+]).toArray();
+
+
+4. Find the number of problems solved by the user in Codekata
+
+
+db.codekata.aggregate([
+  {
+    $match: { solved: true }
+  },
+  {
+    $group: {
+      _id: "$userId",
+      solvedProblemsCount: { $sum: 1 }
+    }
+  }
+]).toArray();
+
+5. Find all the mentors who have more than 15 mentees
+
+db.mentors.find({
+  "mentees.15": { $exists: true }
+}).toArray();
+
+6. Find the number of users who are absent and whose tasks are not submitted between October 15, 2020, and October 31, 2020
+First, find users who were absent during this period:
+
+
+const absentUsers = db.attendance.find({
+  status: "Absent",
+  date: {
+    $gte: new Date("2020-10-15T00:00:00Z"),
+    $lte: new Date("2020-10-31T23:59:59Z")
+  }
+}).map(doc => doc.userId);
+
+Then, find tasks that are due in this period and are not submitted:
+
+const unsubmittedTasks = db.tasks.find({
+  dueDate: {
+    $gte: new Date("2020-10-15T00:00:00Z"),
+    $lte: new Date("2020-10-31T23:59:59Z")
+  },
+  status: "Not Submitted"
+}).map(doc => doc.userId);
+
+Finally, find the intersection of absent users who also have unsubmitted tasks:
+
+const absentUsersWithUnsubmittedTasks = db.attendance.aggregate([
+  {
+    $match: {
+      userId: { $in: absentUsers },
+      status: "Absent",
+      date: {
+        $gte: new Date("2020-10-15T00:00:00Z"),
+        $lte: new Date("2020-10-31T23:59:59Z")
+      }
+    }
+  },
+  {
+    $group: {
+      _id: "$userId",
+      absentCount: { $sum: 1 }
+    }
+  }
+]).toArray();
+
+const absentCount = absentUsersWithUnsubmittedTasks.length;
+console.log(`Number of absent users with unsubmitted tasks: ${absentCount}`);
